@@ -48,6 +48,11 @@ public class HojaDeTareas11 {
 		return lista1;
 
 	}
+	public static void ejercicio3() {
+		
+		
+		
+	}
 	
 	
 	
