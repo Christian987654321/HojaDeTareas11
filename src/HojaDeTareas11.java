@@ -36,8 +36,27 @@ public class HojaDeTareas11 {
 		
 		System.out.println(fusionEnteros(lista1,lista2));*/
 		//System.out.println(generadorDeLista().size());
-		ejercicio5();
+		/*
+		int num=24 /7;
+		System.out.println(num);
+		int num2=24 %7;
+		System.out.println(num2);
+		*/
 		
+		List<List<String>>valor=repartoAlumnos(generadorDeLista(),7);
+		
+		for(int i=0;i<valor.size();i++) {
+			System.out.println(valor.get(i));
+		}
+		
+		/*
+		for (List<String> valores:valor) {
+			//System.out.println(valores);
+			for(String a:valores) {
+				System.out.println(a);
+			}
+		}*/
+		//ejercicio5();
 	}
 	
 	public static void ejercicio1() {
@@ -108,7 +127,7 @@ public class HojaDeTareas11 {
 	}
 	
 	public static List<List<String>> repartoAlumnos(List<String> lista, int numGrupos){
-		List<List<String>> grupos = new ArrayList<>();
+		List<List<String>> grupos = new ArrayList<List<String>>();
 		
         int numAlumnos = lista.size();
         int tamañoBase = numAlumnos / numGrupos;
