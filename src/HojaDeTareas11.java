@@ -42,12 +42,12 @@ public class HojaDeTareas11 {
 		int num2=24 %7;
 		System.out.println(num2);
 		*/
-		
+		/*
 		List<List<String>>valor=repartoAlumnos(generadorDeLista(),7);
 		
 		for(int i=0;i<valor.size();i++) {
 			System.out.println(valor.get(i));
-		}
+		}/*
 		
 		/*
 		for (List<String> valores:valor) {
@@ -56,7 +56,7 @@ public class HojaDeTareas11 {
 				System.out.println(a);
 			}
 		}*/
-		//ejercicio5();
+		ejercicio5();
 	}
 	
 	public static void ejercicio1() {
@@ -155,7 +155,7 @@ public class HojaDeTareas11 {
 		Set<String>claves=dic.keySet(); // set sobre claves porque no se repiten
 		Scanner sc=new Scanner(System.in);
 		int opcion=-1;
-		String linea=null,letra=null,key=null,value=null;
+		String linea=null;
 		String [] todo=new String[0];
 		String rutaBin ="Diccionario.dat";
 		String ruta="Diccionario.csv";
@@ -201,102 +201,30 @@ public class HojaDeTareas11 {
 			sc.nextLine();
 			switch(opcion) {
 			case 1:
-				System.out.println("Ingresa la palabra a buscar en el diccionario.");
-				linea=sc.nextLine().toLowerCase();
-				linea=Character.toUpperCase(linea.charAt(0))+linea.substring(1,linea.length());
-				if(dic.get(linea)==null) {
-					System.out.println("La palabra todavía no existe en éste diccionario.\n");
-				}else {
-				System.out.println(linea+": "+dic.get(linea)+"\n");
-				}
+				buscarPalabraEnDicc(dic, sc);
 				break;
 			case 2:
 				
-				for (String clave:claves) {
-					System.out.println(clave+": "+dic.get(clave));
-				}
-				System.out.println("");
+				listarDicc(dic, claves);
 				break;
 			case 3:
-				System.out.println("Ingresa la letra de las palabras a buscar en el diccionario.");
-				letra=sc.nextLine().toUpperCase();
-				for (String clave:claves) {
-					if(clave.startsWith(letra)) {
-						System.out.println(clave+": "+dic.get(clave));
-					}
-				}
-				System.out.println("");
+				listarDiccPorLetra(dic, claves, sc);
 
 				break;
 			case 4:
-				System.out.println("Ingresa la palabra para añadir en el diccionario.");
-				key=sc.nextLine().toLowerCase();
-				System.out.println("Ahora ingresa su significado.");
-				value=sc.nextLine();
-				key=Character.toUpperCase(key.charAt(0))+key.substring(1,key.length());
-				dic.put(key, value);
+				añadirPalabraDicc(dic, sc);
 				
 				break;
 			case 5:
-				System.out.println("Ingresa la palabra a borrar del diccionario.");
-				key=sc.nextLine();
-				key=Character.toUpperCase(key.charAt(0))+key.substring(1,key.length());
-				linea=dic.remove(key);
-				if(linea==null) {
-					System.out.println("No se pudo remover la palabra.\n");
-				}else {
-					System.out.println("Borrada con éxito.\n");
-				}
+				borrarPalabraDicc(dic, sc);
 				break;
 			case 6:
 				
-				try(ObjectOutputStream writer = new ObjectOutputStream (new FileOutputStream(rutaBin))){
-					
-						for(String clave:claves) {
-							writer.writeObject(clave+":"+dic.get(clave));
-						}
-					
-				} catch (FileNotFoundException e) {
-					System.out.println("Fichero no encontrado");
-				} catch (IOException e) {
-					System.out.println(e.toString());
-				}
-				/* Leer el binario
-				TreeMap<String,String> dic2=new TreeMap<String,String>();
-				Set<String>claves2=dic2.keySet();
-				
-				try(ObjectInputStream reader=new ObjectInputStream(new FileInputStream(rutaBin))){
-					while(true) {
-						linea=(String) reader.readObject();
-						todo=linea.split(":");
-						dic2.put(todo[0], todo[1]);
-					}
-				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
-					
-				} catch (ClassNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
-				for (String clave:claves) {
-					System.out.println(clave+": "+dic.get(clave));
-				}
-				 */
+				exportarDiccABinario(dic, claves, rutaBin);
 				break;
 			case 7:
 				
-				try(BufferedWriter writer=new BufferedWriter(new FileWriter(ruta))){
-					for (String clave:claves) {
-						writer.write(clave+": "+dic.get(clave));
-						writer.newLine();
-					}
-					
-				} catch (IOException e) {
-					System.out.println(e.toString());
-				}
+				guardarDiccYSalir(dic, claves, ruta);
 				
 				break;
 			default:
@@ -304,10 +232,119 @@ public class HojaDeTareas11 {
 				break;
 			}
 			
-			
 		}while (opcion!=7);
 		System.out.println("Hasta luego!");
 		
+	}
+
+	private static void guardarDiccYSalir(TreeMap<String, String> dic, Set<String> claves, String ruta) {
+		try(BufferedWriter writer=new BufferedWriter(new FileWriter(ruta))){
+			for (String clave:claves) {
+				writer.write(clave+": "+dic.get(clave));
+				writer.newLine();
+			}
+			
+		} catch (IOException e) {
+			System.out.println(e.toString());
+		}
+	}
+
+	private static void exportarDiccABinario(TreeMap<String, String> dic, Set<String> claves, String rutaBin) {
+		try(ObjectOutputStream writer = new ObjectOutputStream (new FileOutputStream(rutaBin))){
+			
+				for(String clave:claves) {
+					writer.writeObject(clave+":"+dic.get(clave));
+				}
+			
+		} catch (FileNotFoundException e) {
+			System.out.println("Fichero no encontrado");
+		} catch (IOException e) {
+			System.out.println(e.toString());
+		}
+		System.out.println("Exportado con éxito.\n");
+		/* Leer el binario
+		TreeMap<String,String> dic2=new TreeMap<String,String>();
+		Set<String>claves2=dic2.keySet();
+		
+		try(ObjectInputStream reader=new ObjectInputStream(new FileInputStream(rutaBin))){
+			while(true) {
+				linea=(String) reader.readObject();
+				todo=linea.split(":");
+				dic2.put(todo[0], todo[1]);
+			}
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		for (String clave:claves) {
+			System.out.println(clave+": "+dic.get(clave));
+		}
+		 */
+	}
+
+	private static void borrarPalabraDicc(TreeMap<String, String> dic, Scanner sc) {
+		String linea;
+		String key;
+		System.out.println("Ingresa la palabra a borrar del diccionario.");
+		key=sc.nextLine();
+		key=Character.toUpperCase(key.charAt(0))+key.substring(1,key.length());
+		linea=dic.remove(key);
+		if(linea==null) {
+			System.out.println("No se pudo remover la palabra.\n");
+		}else {
+			System.out.println("Borrada con éxito.\n");
+		}
+	}
+
+	private static void añadirPalabraDicc(TreeMap<String, String> dic, Scanner sc) {
+		String key;
+		String value;
+		System.out.println("Ingresa la palabra para añadir en el diccionario.");
+		key=sc.nextLine().toLowerCase();
+		System.out.println("Ahora ingresa su significado.");
+		value=sc.nextLine();
+		key=Character.toUpperCase(key.charAt(0))+key.substring(1,key.length());
+		dic.put(key, value);
+	}
+
+	private static void listarDiccPorLetra(TreeMap<String, String> dic, Set<String> claves, Scanner sc) {
+		String letra;
+		System.out.println("Ingresa la letra de las palabras a buscar en el diccionario.");
+		letra=sc.nextLine().toUpperCase();
+		for (String clave:claves) {
+			if(clave.startsWith(letra)) {
+				System.out.println(clave+": "+dic.get(clave));
+			}
+		}
+		if(letra.length()>1) {
+			System.out.println("Para listar por letra ingresa sólo una letra.");
+		}
+		System.out.println("");
+	}
+
+	private static void listarDicc(TreeMap<String, String> dic, Set<String> claves) {
+		for (String clave:claves) {
+			System.out.println(clave+": "+dic.get(clave));
+		}
+		System.out.println("");
+	}
+
+	private static void buscarPalabraEnDicc(TreeMap<String, String> dic, Scanner sc) {
+		String linea;
+		System.out.println("Ingresa la palabra a buscar en el diccionario.");
+		linea=sc.nextLine().toLowerCase();
+		linea=Character.toUpperCase(linea.charAt(0))+linea.substring(1,linea.length());
+		if(dic.get(linea)==null) {
+			System.out.println("La palabra todavía no existe en éste diccionario.\n");
+		}else {
+		System.out.println(linea+": "+dic.get(linea)+"\n");
+		}
 	}
 	
 	
